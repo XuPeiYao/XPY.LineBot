@@ -5,13 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Line.Bot.SDK" Version="4.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="SDK\" />
+    <ProjectReference Include="..\LineBot\LineBot.csproj" />
   </ItemGroup>
 
 </Project>
