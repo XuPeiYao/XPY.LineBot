@@ -12,16 +12,14 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
+using Line.Messages.Flex;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Line
-{
-    internal static class ISendMessageExtensions
-    {
-        public static ISendMessage[] ValidateAndConvert(this IEnumerable<ISendMessage> messages)
-        {
+namespace Line {
+    internal static class ISendMessageExtensions {
+        public static ISendMessage[] ValidateAndConvert(this IEnumerable<ISendMessage> messages) {
             var result = messages.ToArray();
 
             Validate(result);
@@ -29,13 +27,11 @@ namespace Line
             return result;
         }
 
-        public static void Validate(this ISendMessage[] messages)
-        {
+        public static void Validate(this ISendMessage[] messages) {
             if (messages.Length > 5)
                 throw new InvalidOperationException("The maximum number of messages is 5.");
 
-            foreach (var message in messages)
-            {
+            foreach (var message in messages) {
                 if (message == null)
                     throw new InvalidOperationException("The message should not be null.");
 
@@ -46,8 +42,7 @@ namespace Line
             }
         }
 
-        private static bool IsInvalidMessageType(ISendMessage message)
-        {
+        private static bool IsInvalidMessageType(ISendMessage message) {
             if (message is TextMessage)
                 return false;
 
@@ -70,6 +65,9 @@ namespace Line
                 return false;
 
             if (message is TemplateMessage)
+                return false;
+
+            if (message is FlexMessage)
                 return false;
 
             return true;

@@ -12,13 +12,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-namespace Line
-{
+namespace Line {
     /// <summary>
     /// Encapsulates the message types.
     /// </summary>
-    public enum MessageType
-    {
+    public enum MessageType {
         /// <summary>
         /// Unknown.
         /// </summary>
@@ -62,6 +60,11 @@ namespace Line
         /// <summary>
         /// Video message.
         /// </summary>
-        Video
+        Video,
+
+        /// <summary>
+        /// Flex message
+        /// </summary>
+        Flex,
     }
 }
