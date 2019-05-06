@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Line.Messages.Flex {
     public enum BubbleTemplateType {
-        Bubble
+        Bubble,
+        Box
     }
 }
