@@ -12,17 +12,17 @@ using StackExchange.Redis;
 using XPY.LineBot.Core;
 
 namespace XPY.LineBot.Plugins.PttBeauty {
-    public class PttBeautyConfig : ILineServiceConfigure {
+    public class DcardSexConfig : ILineServiceConfigure {
         public static IDatabase redisDatabase { get; set; }
         public static IServer redisServer { get; set; }
         public void ConfigureServices(IServiceCollection services) {
             var parser = new FileIniDataParser();
-            var iniPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "pttBeauty.ini");
+            var iniPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dcardsex.ini");
             IniData data = parser.ReadFile(iniPath);
 
             var config = ConfigurationOptions.Parse(data.GetKey("RedisConnectionString"));
             var redisConnection = ConnectionMultiplexer.Connect(config);
-            redisDatabase = redisConnection.GetDatabase(0);
+            redisDatabase = redisConnection.GetDatabase(1);
 
             redisServer = redisConnection.GetServer(config.EndPoints.First());
         }

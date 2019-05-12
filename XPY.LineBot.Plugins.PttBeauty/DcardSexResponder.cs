@@ -9,9 +9,9 @@ using StackExchange.Redis;
 using XPY.LineBot.Core;
 
 namespace XPY.LineBot.Plugins.PttBeauty {
-    public class PttBeautyResponder : ILineResponder {
+    public class DcardSexResponder : ILineResponder {
         public ILineBot Bot { get; private set; }
-        public PttBeautyResponder(ILineBot bot) {
+        public DcardSexResponder(ILineBot bot) {
             Bot = bot;
         }
 
@@ -19,11 +19,9 @@ namespace XPY.LineBot.Plugins.PttBeauty {
         public async Task<bool> Handle(ILineEvent e) {
             if (e.EventType != LineEventType.Message) return false;
 
-            Regex command = new Regex(@"\S*妹子[!！]?$");
+            if (!e.Message?.Text?.StartsWith("開車") ?? true) return false;
 
-            if (!command.IsMatch(e.Message?.Text ?? "")) return false;
-
-            var keyword = e.Message.Text.Substring(0, e.Message.Text.IndexOf("妹子"));
+            var keyword = e.Message.Text.Substring(2).Replace("!", "").Replace("！", "");
 
             HttpClient client = new HttpClient();
             List<Uri> images = new List<Uri>();
@@ -54,7 +52,7 @@ namespace XPY.LineBot.Plugins.PttBeauty {
             if (images.Count == 0) {
                 await Bot.Reply(e.ReplyToken,
                     new TextMessage() {
-                        Text = "對不起!!現在找不到你要的妹子"
+                        Text = "老司機現在找不到你要的車!"
                     });
             } else {
                 ISendMessage message;
@@ -70,7 +68,7 @@ namespace XPY.LineBot.Plugins.PttBeauty {
                                 new CarouselColumn() {
                                     Actions = new IAction[]{
                                         new MessageAction() {
-                                            Label = "再來一個妹子",
+                                            Label = "再開一次車",
                                             Text = e.Message.Text
                                         },
                                         new UriAction() {
@@ -79,7 +77,7 @@ namespace XPY.LineBot.Plugins.PttBeauty {
                                         }
                                     },
                                     ThumbnailUrl = x,
-                                    Title = "妹子",
+                                    Title = "開車",
                                     Text = x.ToString()
                                 }).ToArray()
                         },
@@ -97,20 +95,24 @@ namespace XPY.LineBot.Plugins.PttBeauty {
             Random rnd = new Random((int)DateTime.Now.Ticks);
 
             for (int i = 0; i < 10; i++) {
-                var key = PttBeautyConfig.redisDatabase.KeyRandom(CommandFlags.NoScriptCache);
+                var key = DcardSexConfig.redisDatabase.KeyRandom(CommandFlags.NoScriptCache);
 
-                var length = await PttBeautyConfig.redisDatabase.ListLengthAsync(key);
+                var length = await DcardSexConfig.redisDatabase.ListLengthAsync(key);
 
                 int index = rnd.Next((int)length);
 
-                string url = await PttBeautyConfig.redisDatabase.ListGetByIndexAsync(key, index);
+                string url = await DcardSexConfig.redisDatabase.ListGetByIndexAsync(key, index);
 
-                var response = await httpClient.GetAsync(url);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-                    Console.WriteLine(url);
-                    return url;
-                } else {
-                    PttBeautyConfig.redisDatabase.ListRemove(key, url);
+                try {
+                    var response = await httpClient.GetAsync(url);
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                        Console.WriteLine(url);
+                        return url;
+                    } else {
+                        DcardSexConfig.redisDatabase.ListRemove(key, url);
+                    }
+                } catch {
+                    DcardSexConfig.redisDatabase.ListRemove(key, url);
                 }
             }
             return null;
@@ -120,7 +122,7 @@ namespace XPY.LineBot.Plugins.PttBeauty {
             Random rnd = new Random((int)DateTime.Now.Ticks);
 
             for (int i = 0; i < 10; i++) {
-                var keys = PttBeautyConfig.redisServer.Keys(0, $"*{keyword.Replace("的", "")}*", 10).ToList();
+                var keys = DcardSexConfig.redisServer.Keys(0, $"*{keyword.Replace("的", "")}*", 10).ToList();
 
                 if (keys.Count == 0) {
                     return null;
@@ -130,17 +132,21 @@ namespace XPY.LineBot.Plugins.PttBeauty {
 
                 var key = keys[index];
 
-                var length = await PttBeautyConfig.redisDatabase.ListLengthAsync(key);
+                var length = await DcardSexConfig.redisDatabase.ListLengthAsync(key);
 
                 index = rnd.Next((int)length);
 
-                var url = await PttBeautyConfig.redisDatabase.ListGetByIndexAsync(key, index);
-                var response = await httpClient.GetAsync(url);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-                    Console.WriteLine(url);
-                    return url;
-                } else {
-                    PttBeautyConfig.redisDatabase.ListRemove(key, url);
+                var url = await DcardSexConfig.redisDatabase.ListGetByIndexAsync(key, index);
+                try {
+                    var response = await httpClient.GetAsync(url);
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                        Console.WriteLine(url);
+                        return url;
+                    } else {
+                        DcardSexConfig.redisDatabase.ListRemove(key, url);
+                    }
+                } catch {
+                    DcardSexConfig.redisDatabase.ListRemove(key, url);
                 }
             }
             return null;

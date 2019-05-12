@@ -15,6 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="dcardsex.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="pttBeauty.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
